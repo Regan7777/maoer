@@ -1,0 +1,19 @@
+{
+  "name": "my-blog",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vuepress dev docs",
+    "build": "vuepress build docs && node scripts/post-build.cjs",
+    "push-indexnow": "node scripts/push-indexnow.cjs",
+    "clean": "vuepress clean-dev docs"
+  },
+  "devDependencies": {
+    "@vuepress/bundler-vite": "2.0.0-rc.24",
+    "typescript": "^5.7.3",
+    "vue": "^3.5.13",
+    "vuepress": "2.0.0-rc.24",
+    "vuepress-theme-plume": "1.0.0-rc.158"
+  }
+}

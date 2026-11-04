@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>猫耳博客 - 动态光晕 (Tint Plate) 真实渲染展厅</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-main: #1d1d1f;
+      --text-tag: #86868b;
+      --btn-brand-bg: #0071e3;
+      --btn-brand-text: #ffffff;
+      --btn-alt-bg: rgba(0, 0, 0, 0.05);
+      --btn-alt-text: #1d1d1f;
+      --border-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body.dark {
+      --bg-color: #0b0f19;
+      --text-main: #f5f5f7;
+      --text-tag: #86868b;
+      --btn-brand-bg: #2997ff;
+      --btn-brand-text: #000000;
+      --btn-alt-bg: rgba(255, 255, 255, 0.12);
+      --btn-alt-text: #f5f5f7;
+      --border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      transition: background-color 0.3s ease, color 0.3s ease;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部控制栏 */
+    .toolbar {
+      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: saturate(180%) blur(20px);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    body.dark .toolbar {
+      background: rgba(11, 15, 25, 0.85);
+    }
+
+    .toolbar-title {
+      font-size: 15px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-core {
+      background: #0071e3;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    body.dark .badge-core {
+      background: #2997ff;
+      color: #000;
+    }
+
+    .btn-toggle {
+      padding: 8px 16px;
+      border-radius: 980px;
+      border: 1px solid var(--border-color);
+      background: var(--btn-alt-bg);
+      color: var(--text-main);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-toggle:hover {
+      transform: scale(1.02);
+    }
+
+    /* 方案切换栏 */
+    .selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border-color);
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.015);
+    }
+
+    body.dark .selector {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .selector-btn {
+      padding: 9px 18px;
+      border-radius: 980px;
+      border: 1px solid var(--border-color);
+      background: var(--btn-alt-bg);
+      color: var(--text-main);
+      font-size: 13.5px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .selector-btn.active {
+      background: var(--btn-brand-bg);
+      color: var(--btn-brand-text);
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(0, 113, 227, 0.3);
+    }
+
+    .color-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* 主舞台 Hero 仿真 (完全等同于 Plume VPHomeHero) */
+    .hero-stage {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 100px 24px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      min-height: 520px;
+    }
+
+    /* 100% Plume 原生背景过滤层 */
+    .bg-filter {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .bg-filter canvas {
+      width: 100%;
+      height: 100%;
+      image-rendering: auto; /* 关键：双线性平滑模糊拉伸 */
+      display: block;
+    }
+
+    .bg-filter::after {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      content: "";
+      background: linear-gradient(
+        to bottom,
+        var(--bg-color) 0%,
+        transparent 35%,
+        transparent 65%,
+        var(--bg-color) 100%
+      );
+      transition: background 0.3s ease;
+    }
+
+    /* 前景内容 */
+    .hero-content {
+      position: relative;
+      z-index: 10;
+    }
+
+    .hero-name {
+      font-size: 80px;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin-bottom: 10px;
+    }
+
+    .hero-tagline {
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--text-tag);
+      letter-spacing: 2px;
+      margin-bottom: 18px;
+    }
+
+    .hero-text {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 40px;
+      line-height: 1.25;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+    }
+
+    .action-btn {
+      padding: 12px 28px;
+      border-radius: 980px;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .action-brand {
+      background: var(--btn-brand-bg);
+      color: var(--btn-brand-text);
+      box-shadow: 0 4px 16px rgba(0, 113, 227, 0.3);
+    }
+
+    .action-brand:hover {
+      transform: scale(1.03);
+    }
+
+    .action-alt {
+      background: var(--btn-alt-bg);
+      color: var(--btn-alt-text);
+    }
+
+    .action-alt:hover {
+      transform: scale(1.03);
+    }
+
+    /* 底部参数解释器 */
+    .info-panel {
+      padding: 22px;
+      background: var(--bg-color);
+      border-top: 1px solid var(--border-color);
+      text-align: center;
+    }
+
+    .info-box {
+      display: inline-block;
+      max-width: 720px;
+      text-align: left;
+      background: rgba(0, 0, 0, 0.025);
+      padding: 18px 24px;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    body.dark .info-box {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .info-title {
+      font-size: 15.5px;
+      font-weight: 600;
+      color: var(--btn-brand-bg);
+      margin-bottom: 6px;
+    }
+
+    code {
+      font-family: Consolas, monospace;
+      background: rgba(0, 0, 0, 0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 12.5px;
+      color: #0071e3;
+    }
+
+    body.dark code {
+      background: rgba(255, 255, 255, 0.1);
+      color: #2997ff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="toolbar">
+    <div class="toolbar-title">
+      🌊 猫耳博客 - 动态光晕 (Plume 原生数学引擎) 实机展厅
+      <span class="badge-core">100% 真实源码算法</span>
+    </div>
+    <button class="btn-toggle" onclick="toggleDark()">🌓 白天/黑夜模式切换</button>
+  </div>
+
+  <div class="selector" id="schemeSelector"></div>
+
+  <div class="hero-stage">
+    <!-- 100% 还原 Plume 主题的 32x32 微型画布拉伸引擎 -->
+    <div class="bg-filter">
+      <canvas id="tintCanvas" width="32" height="32"></canvas>
+    </div>
+
+    <div class="hero-content">
+      <h1 class="hero-name">猫耳</h1>
+      <div class="hero-tagline">maoer.blog</div>
+      <div class="hero-text">2026机场推荐·科学上网</div>
+      <div class="hero-actions">
+        <span class="action-btn action-brand">博客 ›</span>
+        <span class="action-btn action-alt">随笔 ›</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-panel">
+    <div class="info-box">
+      <div class="info-title" id="infoTitle">当前动态光晕方案</div>
+      <div id="infoDesc">说明</div>
+      <div style="margin-top: 8px;">对应 <code>docs/README.md</code> 配置代码：<br><code id="infoYaml">tintPlate: 190</code></div>
+      <div style="margin-top: 6px; font-size: 12.5px; color: var(--text-tag);">
+        💡 为什么之前会“纯黑色”？因为原版只配置了数字 190，Plume 在黑夜模式下会自动把颜色降到几乎看不见的 32（死黑色）。新方案为黑夜模式专门注入了发光色彩矩阵，夜晚如深海极光，通透且绝不死黑！
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 方案定义：包含白天和黑夜专属的 Tint 光晕矩阵
+    const schemes = [
+      {
+        id: 'P1',
+        name: '方案 1：苹果深海通透冰蓝 (强烈推荐 · 治愈死黑)',
+        dot: '#38bdf8',
+        desc: '【Apple 纯净视网膜质感】彻底修复原版黑夜死黑问题！白天是如雪山冰川般的通透天青色，夜晚则是纯净的深海静谧发光蓝波，呼吸流动极度高级，完全不伤眼。',
+        light: { r: 180, g: 215, b: 245, offset: 45 },
+        dark:  { r: 25,  g: 65,  b: 140, offset: 55 },
+        yaml: `tintPlate:
+  light: '180, 215, 245'
+  dark: '25, 65, 140'`
+      },
+      {
+        id: 'P2',
+        name: '方案 2：Apple Intelligence 灵动极光紫蓝',
+        dot: '#a855f7',
+        desc: '【苹果最新 Siri 极光同款】将天青蓝与微光淡紫通过流体波动融合。白天清澈微蓝，黑夜如深邃银河星轨在字间若隐若现流动。',
+        light: { r: 190, g: 200, b: 250, offset: 50 },
+        dark:  { r: 45,  g: 35,  b: 135, offset: 60 },
+        yaml: `tintPlate:
+  light: '190, 200, 250'
+  dark: '45, 35, 135'`
+      },
+      {
+        id: 'P3',
+        name: '方案 3：清透翡翠薄荷流光 (呼应 Logo 绿调)',
+        dot: '#34d399',
+        desc: '【极客护眼通透流光】呼应猫耳站点绿色主题与 Favicon。白天如同青柠冰水般沁人心脾，黑夜如幽绿极光在深渊拂过，视觉疲劳度为 0。',
+        light: { r: 180, g: 235, b: 210, offset: 42 },
+        dark:  { r: 20,  g: 90,  b: 85,  offset: 55 },
+        yaml: `tintPlate:
+  light: '180, 235, 210'
+  dark: '20, 90, 85'`
+      },
+      {
+        id: 'P4',
+        name: '方案 4：原本默认基准 (对照参考)',
+        dot: '#94a3b8',
+        desc: '【您原本的配置】数字 190：白天是轻微青灰色；但在黑夜模式下 Plume 源码会直接强制退回全 32 暗黑（导致您之前看到的纯黑死寂界面）。',
+        light: { r: 190, g: 190, b: 190, offset: 64 },
+        dark:  { r: 32,  g: 32,  b: 32,  offset: 36 },
+        yaml: `tintPlate: 190`
+      }
+    ];
+
+    let current = schemes[0];
+    const canvas = document.getElementById('tintCanvas');
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+    let animId;
+
+    // 100% Plume 官方底层色彩数学波动函数
+    function run() {
+      const isDark = document.body.classList.contains('dark');
+      const tint = isDark ? current.dark : current.light;
+
+      for (let x = 0; x <= 32; x++) {
+        for (let y = 0; y <= 32; y++) {
+          const r = Math.floor(tint.r + tint.offset * Math.cos((x * x - y * y) / 300 + t));
+          const g = Math.floor(tint.g + tint.offset * Math.sin((x * x * Math.cos(t / 4) + y * y * Math.sin(t / 3)) / 300));
+          const b = Math.floor(tint.b + tint.offset * Math.sin(5 * Math.sin(t / 9) + ((x - 100) * (x - 100) + (y - 100) * (y - 100)) / 1100));
+
+          ctx.fillStyle = `rgb(${r},${g},${b})`;
+          ctx.fillRect(x, y, 1, 1);
+        }
+      }
+      t += 0.02;
+      animId = requestAnimationFrame(run);
+    }
+
+    function renderSelector() {
+      const el = document.getElementById('schemeSelector');
+      el.innerHTML = schemes.map(s => `
+        <button class="selector-btn ${s.id === current.id ? 'active' : ''}" onclick="selectScheme('${s.id}')">
+          <span class="color-dot" style="background: ${s.dot};"></span>
+          ${s.name}
+        </button>
+      `).join('');
+    }
+
+    function selectScheme(id) {
+      current = schemes.find(s => s.id === id);
+      renderSelector();
+      document.getElementById('infoTitle').innerText = current.name;
+      document.getElementById('infoDesc').innerText = current.desc;
+      document.getElementById('infoYaml').innerText = current.yaml;
+    }
+
+    function toggleDark() {
+      document.body.classList.toggle('dark');
+    }
+
+    renderSelector();
+    selectScheme('P1');
+    run();
+  </script>
+</body>
+</html>

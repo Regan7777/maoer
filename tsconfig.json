@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": false,
+    "noImplicitAny": false,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "ignoreDeprecations": "5.0"
+  },
+  "include": [
+    "docs/.vuepress/**/*.ts",
+    "docs/.vuepress/**/*.d.ts",
+    "docs/.vuepress/**/*.vue"
+  ],
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "**/node_modules/*",
+    "docs/.vuepress/dist",
+    "dist"
+  ],
+  "vueCompilerOptions": {
+    "target": 3.5,
+    "strictTemplates": false
+  }
+}
