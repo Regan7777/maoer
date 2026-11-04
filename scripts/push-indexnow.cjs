@@ -6,7 +6,7 @@ const projectRoot = path.resolve(__dirname, '..');
 const sitemapPath = path.join(projectRoot, 'docs', '.vuepress', 'public', 'sitemap.xml');
 
 const host = 'maoer.blog';
-const key = '7c49b6b8b0e54d89a65f97331821cf36';
+const key = '9b7f0616c9694d10a3575b5c2db8e699';
 const keyLocation = `https://${host}/${key}.txt`;
 
 console.log('[IndexNow] 开始准备向 Bing / IndexNow 官方 API 提交全站 URL...');
