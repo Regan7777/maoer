@@ -115,43 +115,50 @@ html.dark .vp-nav-logo {
 }
 
 /* ===================================================
-   表格一屏自适应排版：无需拖动横向滚动条，整洁舒展
+   表格自适应排版：杜绝单字成行，杜绝横向撑爆与侧边栏冲突
    =================================================== */
 .vp-doc table {
   display: table !important;
   width: 100% !important;
   max-width: 100% !important;
   table-layout: auto !important;
-  overflow: visible !important;
   border-collapse: collapse !important;
   margin: 18px 0 !important;
   border-spacing: 0 !important;
+  word-break: break-word !important;
 }
 
-/* 序号、服务商、线路、资费、直达列：强制单行横排不换行 */
 .vp-doc th,
 .vp-doc td {
-  padding: 10px 10px !important;
+  padding: 10px 12px !important;
   font-size: 13.5px !important;
-  line-height: 1.5 !important;
+  line-height: 1.6 !important;
   vertical-align: middle !important;
+  word-break: break-word !important;
+  white-space: normal !important;
 }
 
-.vp-doc th:nth-child(1), .vp-doc td:nth-child(1),
-.vp-doc th:nth-child(2), .vp-doc td:nth-child(2),
-.vp-doc th:nth-child(3), .vp-doc td:nth-child(3),
-.vp-doc th:last-child, .vp-doc td:last-child {
+/* 仅第一列（如指标名、推荐排名、维度名称）保持紧凑居中 */
+.vp-doc th:first-child,
+.vp-doc td:first-child {
   white-space: nowrap !important;
   text-align: center !important;
+  width: 1%; /* 紧贴内容最小宽度 */
 }
 
-/* 核心特色列：自动占满剩余宽度，文字自然阅读折行（杜绝单字成行） */
-.vp-doc th:nth-child(4),
-.vp-doc td:nth-child(4) {
-  white-space: normal !important;
-  word-break: break-word !important;
+/* 最后一列如果是“官网直达”按钮链接，保持单行居中 */
+.vp-doc td:last-child a,
+.vp-doc th:last-child {
+  white-space: nowrap !important;
+}
+
+/* 正文各内容列：允许自然段落折行，排版舒展整洁 */
+.vp-doc td {
   text-align: left !important;
-  line-height: 1.55 !important;
+}
+
+.vp-doc th {
+  text-align: center !important;
 }
 
 /* 表头背景与强调质感 */
