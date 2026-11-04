@@ -9,6 +9,8 @@
   "scripts": {
     "dev": "vuepress dev docs",
     "build": "vuepress build docs && node scripts/post-build.cjs",
+    "docs:build": "vuepress build docs && node scripts/post-build.cjs",
+    "docs:dev": "vuepress dev docs",
     "push-indexnow": "node scripts/push-indexnow.cjs",
     "clean": "vuepress clean-dev docs"
   },
