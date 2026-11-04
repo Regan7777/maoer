@@ -143,5 +143,13 @@ if (fs.existsSync(keyFileSource)) {
   console.log(`[post-build] 成功同步 IndexNow 验证文件: ${indexNowKey}.txt`);
 }
 
+// 5. 将整个 docs/.vuepress/dist 同步到根目录 dist (双保险兼容 Cloudflare Pages 输出目录设置)
+const rootDistDir = path.join(projectRoot, 'dist');
+if (fs.existsSync(rootDistDir)) {
+  fs.rmSync(rootDistDir, { recursive: true, force: true });
+}
+fs.cpSync(distDir, rootDistDir, { recursive: true });
+console.log('[post-build] 成功同步构建产物至根目录 dist/ (双保险兼容 Cloudflare Pages 输出目录配置)');
+
 console.log('[post-build] SEO 与 Bing 抓取构建后优化全部顺利完成！');
 
