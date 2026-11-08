@@ -1,4 +1,4 @@
----
+﻿---
 categories:
   - 随笔
 title: 正在跳转
@@ -41,7 +41,7 @@ const linkMap = {
   shandianshu: 'https://fugui0077.shandianshuaff.com/#/?code=KSByEAn9',
   liulian: 'https://zyrrz.liulianyunaff.com/#/?code=Y6A1M1MN',
   huanqiuti: 'https://fugui0077.huanqiutiaff.com/#/?code=rJyQn4xG',
-  yunjiexian: 'https://fugui0077.yunjiexianaff.com/#/?code=qA3LF6hW'
+  yunjiexian: 'https://fugui0077.yunjiexianaff.com/#/?code=FVkiFyAx'
 }
 
 onMounted(() => {
