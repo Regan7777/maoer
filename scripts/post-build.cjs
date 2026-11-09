@@ -134,7 +134,7 @@ fs.writeFileSync(sitemapPublicPath, sitemapXml, 'utf8');
 console.log(`[post-build] 成功写入 sitemap.xml，包含 ${existingUrls.length} 个规范 URL，全部注入精准 <lastmod> 与 <priority>！`);
 
 // 4. 确保 IndexNow 验证 Key 存在于 dist 根目录
-const indexNowKey = '7c49b6b8b0e54d89a65f97331821cf36';
+const indexNowKey = '9b7f0616c9694d10a3575b5c2db8e699';
 const keyFileSource = path.join(docsDir, '.vuepress', 'public', `${indexNowKey}.txt`);
 const keyFileDist = path.join(distDir, `${indexNowKey}.txt`);
 

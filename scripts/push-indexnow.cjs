@@ -31,39 +31,43 @@ const payload = JSON.stringify({
   urlList: urlList,
 });
 
-const options = {
-  hostname: 'api.indexnow.org',
-  port: 443,
-  path: '/indexnow',
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json; charset=utf-8',
-    'Content-Length': Buffer.byteLength(payload),
-  },
-};
+const endpoints = [
+  'api.indexnow.org',
+  'www.bing.com'
+];
 
-const req = https.request(options, (res) => {
-  let data = '';
-  res.on('data', (chunk) => {
-    data += chunk;
-  });
-  res.on('end', () => {
-    console.log(`[IndexNow] API 响应状态码: ${res.statusCode} ${res.statusMessage}`);
-    if (res.statusCode === 200 || res.statusCode === 202) {
-      console.log('✅ [IndexNow] 提交成功！Bing 搜索引擎已接收并排队处理抓取任务。');
-    } else {
-      console.log(`ℹ️ [IndexNow] 返回内容: ${data || '(无额外内容)'}`);
-      if (res.statusCode === 422) {
-        console.log('提示: 若当前域名 maoer.blog 尚未解析到公网或刚上线，IndexNow 校验 key.txt 可能未命中，待上线公网后重新执行即可。');
+endpoints.forEach((hostname) => {
+  const options = {
+    hostname: hostname,
+    port: 443,
+    path: '/indexnow',
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8',
+      'Content-Length': Buffer.byteLength(payload),
+    },
+  };
+
+  const req = https.request(options, (res) => {
+    let data = '';
+    res.on('data', (chunk) => {
+      data += chunk;
+    });
+    res.on('end', () => {
+      console.log(`[IndexNow -> ${hostname}] 状态码: ${res.statusCode} ${res.statusMessage}`);
+      if (res.statusCode === 200 || res.statusCode === 202) {
+        console.log(`[IndexNow -> ${hostname}] 提交成功！`);
+      } else {
+        console.log(`[IndexNow -> ${hostname}] 返回内容: ${data || '(无)'}`);
       }
-    }
+    });
   });
-});
 
-req.on('error', (e) => {
-  console.error(`[IndexNow] 请求出错: ${e.message}`);
-});
+  req.on('error', (e) => {
+    console.error(`[IndexNow -> ${hostname}] 请求出错: ${e.message}`);
+  });
 
-req.write(payload);
-req.end();
+  req.write(payload);
+  req.end();
+});
 

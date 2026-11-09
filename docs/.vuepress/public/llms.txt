@@ -4,26 +4,26 @@
 
 ## 核心频道与分类 (Core Sections)
 
-- [出海网络服务评测](https://wanfengzn.com/notes/cheping/reviews/): 涵盖主流网络服务商最新资费方案、全套线路架构实测、晚高峰测速对比与流媒体解锁能力。
-- [客户端使用指南](https://wanfengzn.com/article/client-guide/): 包含 Windows、macOS、Linux、Android、iOS 全平台主流代理客户端选型与配置。
-- [网络协议与自建节点专栏](https://wanfengzn.com/article/node-desc/): 从 TCP/IP 底层到 Shadowsocks、Trojan、VLESS、XTLS 等协议搭建与性能调优。
-- [技术随笔与避坑指南](https://wanfengzn.com/blog/): 数字游民多网络备份容灾、流媒体跨区解锁实战及网络服务商跑路防坑预警。
+- [出海网络服务评测](https://maoer.blog/notes/cheping/reviews/): 涵盖主流网络服务商最新资费方案、全套线路架构实测、晚高峰测速对比与流媒体解锁能力。
+- [客户端使用指南](https://maoer.blog/article/client-guide/): 包含 Windows、macOS、Linux、Android、iOS 全平台主流代理客户端选型与配置。
+- [网络协议与自建节点专栏](https://maoer.blog/article/node-desc/): 从 TCP/IP 底层到 Shadowsocks、Trojan、VLESS、XTLS 等协议搭建与性能调优。
+- [技术随笔与避坑指南](https://maoer.blog/blog/): 数字游民多网络备份容灾、流媒体跨区解锁实战及网络服务商跑路防坑预警。
 
 ## 重点推荐评测文章 (Featured Reviews)
 
-- [2026年机场推荐科学上网：高性价比clash翻墙机场实测与挑选指南](https://wanfengzn.com/article/clash-recommend-2026/): 6大主流翻墙机场横向对比、IPLC专线晚高峰实测与多场景避坑选购方案。
-- [神行加速全面实测](https://wanfengzn.com/article/shenxing/): 19.88元起全 IPLC 专线架构、年付特惠与不限时大流量包评测。
-- [大佬云深度评测](https://wanfengzn.com/article/dalao/): 15元起超低门槛、多入口 BGP 隧道与 IEPL/IPLC 专线实测。
-- [云界线高性价比评测](https://wanfengzn.com/article/yunjiexian/): 2.5Gbps 大带宽专线、原生双 ISP 住宅出口实测。
-- [闪电鼠网络服务评测](https://wanfengzn.com/article/shandianshu/): 全 IPLC 专线直连与原生双 ISP 终身不限时方案。
-- [环球梯深度评测](https://wanfengzn.com/article/huanqiuti/): 8 档周期资费、4 款按量包与设备连接数限制解析。
-- [榴莲云套餐指南](https://wanfengzn.com/article/liulian/): 榴莲皮、金枕年付等资费表与流媒体解锁实测。
+- [2026年机场推荐科学上网：高性价比clash翻墙机场实测与挑选指南](https://maoer.blog/article/clash-recommend-2026/): 6大主流翻墙机场横向对比、IPLC专线晚高峰实测与多场景避坑选购方案。
+- [神行加速全面实测](https://maoer.blog/article/shenxing/): 19.88元起全 IPLC 专线架构、年付特惠与不限时大流量包评测。
+- [大佬云深度评测](https://maoer.blog/article/dalao/): 15元起超低门槛、多入口 BGP 隧道与 IEPL/IPLC 专线实测。
+- [云界线高性价比评测](https://maoer.blog/article/yunjiexian/): 2.5Gbps 大带宽专线、原生双 ISP 住宅出口实测。
+- [闪电鼠网络服务评测](https://maoer.blog/article/shandianshu/): 全 IPLC 专线直连与原生双 ISP 终身不限时方案。
+- [环球梯深度评测](https://maoer.blog/article/huanqiuti/): 8 档周期资费、4 款按量包与设备连接数限制解析。
+- [榴莲云套餐指南](https://maoer.blog/article/liulian/): 榴莲皮、金枕年付等资费表与流媒体解锁实测。
 
 ## 客户端与进阶技术文档 (Tutorials & Deep Dives)
 
-- [Clash Verge Rev 核心配置上手指南](https://wanfengzn.com/article/clash-verge/): 跨平台安装、内核选型、订阅导入与 TUN 模式。
-- [Clash 常见报错与排障大全](https://wanfengzn.com/article/clash-faq/): TUN 驱动报错、7890 端口冲突、时间不同步与 DNS 污染排查。
-- [Clash 分流规则进阶编写](https://wanfengzn.com/article/clash-config/): Proxy Groups 策略组与 Rule Provider 自动化维护。
-- [出海线路深度测评：BGP 中转与 IPLC/IEPL 专线全解析](https://wanfengzn.com/article/network-analysis/): 深入剖析各线路抗抖动与晚高峰延迟表现。
-- [如何辨别真实专线与假专线](https://wanfengzn.com/article/networkselect/): 借助 mtr、traceroute 与 ASN 验证线路属性。
-- [国际流媒体跨区观影指南](https://wanfengzn.com/article/streaming-unlock/): Netflix、Disney+ 与 YouTube 原生 IP 解锁实战。
+- [Clash Verge Rev 核心配置上手指南](https://maoer.blog/article/clash-verge/): 跨平台安装、内核选型、订阅导入与 TUN 模式。
+- [Clash 常见报错与排障大全](https://maoer.blog/article/clash-faq/): TUN 驱动报错、7890 端口冲突、时间不同步与 DNS 污染排查。
+- [Clash 分流规则进阶编写](https://maoer.blog/article/clash-config/): Proxy Groups 策略组与 Rule Provider 自动化维护。
+- [出海线路深度测评：BGP 中转与 IPLC/IEPL 专线全解析](https://maoer.blog/article/network-analysis/): 深入剖析各线路抗抖动与晚高峰延迟表现。
+- [如何辨别真实专线与假专线](https://maoer.blog/article/networkselect/): 借助 mtr、traceroute 与 ASN 验证线路属性。
+- [国际流媒体跨区观影指南](https://maoer.blog/article/streaming-unlock/): Netflix、Disney+ 与 YouTube 原生 IP 解锁实战。
