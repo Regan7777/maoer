@@ -1,11 +1,27 @@
 <script setup lang="ts">
 import { Layout as PlumeLayout } from 'vuepress-theme-plume/client'
 import ServiceRecommendRail from '../components/ServiceRecommendRail.vue'
-import { computed, watchEffect } from 'vue'
+import { computed, watchEffect, onMounted } from 'vue'
 import { useRoute, usePageData } from 'vuepress/client'
 
 const route = useRoute()
 const pageData = usePageData()
+
+// 确保客户端 hydration 后所有图片均具备完备的 alt 描述（彻底杜绝 Bing 抓取告警）
+onMounted(() => {
+  const patchImgAlt = () => {
+    if (typeof document === 'undefined') return
+    document.querySelectorAll('img').forEach((img) => {
+      const alt = img.getAttribute('alt')
+      if (!alt || alt.trim() === '') {
+        const isLogo = img.classList.contains('logo') || (img.getAttribute('src') || '').includes('logo')
+        img.setAttribute('alt', isLogo ? '猫耳博客 Logo' : '猫耳博客配图')
+      }
+    })
+  }
+  patchImgAlt()
+  setTimeout(patchImgAlt, 500)
+})
 
 // 确保浏览器 Tab 标签页始终展示完整的文章大标题与品牌词
 watchEffect(() => {

@@ -3,7 +3,10 @@ import { navbar } from './navbar'
 import { notes } from './notes'
 
 export default (defineThemeConfig as any)({
-  logo: '/images/logo.jpg',
+  logo: {
+    src: '/images/logo.jpg',
+    alt: '猫耳博客 Logo',
+  },
   profile: {
     avatar: '/images/maoer.jpg',
     name: '猫耳',
