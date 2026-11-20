@@ -6,6 +6,8 @@ const distDir = path.join(projectRoot, 'docs', '.vuepress', 'dist');
 const docsDir = path.join(projectRoot, 'docs');
 const sitemapDistPath = path.join(distDir, 'sitemap.xml');
 const sitemapPublicPath = path.join(docsDir, '.vuepress', 'public', 'sitemap.xml');
+const sitemap0DistPath = path.join(distDir, 'sitemap-0.xml');
+const sitemap0PublicPath = path.join(docsDir, '.vuepress', 'public', 'sitemap-0.xml');
 
 console.log('[post-build] 开始执行全栈 SEO 与 Bing 抓取强化处理...');
 
@@ -55,10 +57,8 @@ for (const file of mdFiles) {
     if (tMatch) title = tMatch[1].trim();
   }
 
-  // 默认从文件 mtime 读取
   let isoDate = dateModified ? new Date(dateModified).toISOString() : new Date(stat.mtimeMs).toISOString();
 
-  // 规范化 permalink
   if (permalink) {
     const norm = permalink.endsWith('/') ? permalink : permalink + '/';
     metaMap.set(norm, { file, date: isoDate, title });
@@ -73,7 +73,6 @@ if (fs.existsSync(sitemapDistPath)) {
   existingUrls = locMatches.map(m => m[1]);
 }
 
-// 如果没有读取到，提供兜底全量 URL
 if (existingUrls.length === 0) {
   existingUrls.push('https://maoer.blog/');
   for (const [slug] of metaMap.entries()) {
@@ -81,10 +80,9 @@ if (existingUrls.length === 0) {
   }
 }
 
-// 去重
 existingUrls = Array.from(new Set(existingUrls));
 
-// 3. 构建高精度 W3C 标准 sitemap.xml
+// 3. 构建高精度 W3C 标准 sitemap.xml 与 sitemap-0.xml 双地图
 let sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>\n`;
 sitemapXml += `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n`;
 
@@ -97,7 +95,6 @@ for (const urlStr of existingUrls) {
   const meta = metaMap.get(pathname) || metaMap.get(urlObj.pathname);
   const lastmod = meta ? meta.date : defaultDate;
 
-  // 智能分配 priority 与 changefreq
   let priority = '0.7';
   let changefreq = 'weekly';
 
@@ -128,10 +125,12 @@ for (const urlStr of existingUrls) {
 
 sitemapXml += `</urlset>\n`;
 
-// 写入 dist 和 public
+// 写入 dist 和 public (双 Sitemap)
 fs.writeFileSync(sitemapDistPath, sitemapXml, 'utf8');
 fs.writeFileSync(sitemapPublicPath, sitemapXml, 'utf8');
-console.log(`[post-build] 成功写入 sitemap.xml，包含 ${existingUrls.length} 个规范 URL，全部注入精准 <lastmod> 与 <priority>！`);
+fs.writeFileSync(sitemap0DistPath, sitemapXml, 'utf8');
+fs.writeFileSync(sitemap0PublicPath, sitemapXml, 'utf8');
+console.log(`[post-build] 成功写入 sitemap.xml 与 sitemap-0.xml，包含 ${existingUrls.length} 个规范 URL！`);
 
 // 4. 确保 IndexNow 验证 Key 存在于 dist 根目录
 const indexNowKey = '9b7f0616c9694d10a3575b5c2db8e699';
@@ -187,7 +186,52 @@ function fixHtmlImgAlt(dir) {
 const fixedAltCount = fixHtmlImgAlt(distDir);
 console.log(`[post-build] 成功扫描并修复 HTML 中缺失/为空的 img alt 属性，共注入 ${fixedAltCount} 处合规 alt 描述！`);
 
-// 5. 将整个 docs/.vuepress/dist 同步到根目录 dist 及 .vitepress/dist (三保险全兼容 Cloudflare Pages 输出目录设置)
+// 4.6 修复所有 HTML 文件中过短 (< 80 字符) 的 meta description（彻底根除 Bing Recommendations 警告）
+function fixHtmlMetaDesc(dir) {
+  let count = 0;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      count += fixHtmlMetaDesc(fullPath);
+    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      
+      const titleMatch = html.match(/<title>([^<]*)<\/title>/i);
+      const rawTitle = titleMatch ? titleMatch[1].replace(/\s*\|\s*.*$/, '').trim() : '';
+
+      const patchedHtml = html.replace(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']\s*\/?>/gi, (match, desc) => {
+        if (desc && desc.length >= 80) {
+          return match;
+        }
+        count++;
+        let expandedDesc = '';
+        if (rawTitle && rawTitle !== '猫耳' && rawTitle.length > 2) {
+          expandedDesc = `${rawTitle} - 猫耳技术博客 (maoer.blog) 深度实测与全流程配置指南：涵盖 2026 高速科学上网线路挑选、Clash 与 Sing-box 客户端规则配置及故障排查实用技巧。`;
+        } else {
+          expandedDesc = `猫耳技术博客 (maoer.blog)：专注 2026 稳定高速机场推荐、科学上网翻墙梯子实测、Clash / Sing-box / Shadowrocket 客户端分流配置全教程，以及自建节点与跨境网络线路深度优化指南。`;
+        }
+        return `<meta name="description" content="${expandedDesc}">`;
+      });
+
+      if (patchedHtml !== html) {
+        fs.writeFileSync(fullPath, patchedHtml, 'utf8');
+      }
+    }
+  }
+  return count;
+}
+
+const fixedDescCount = fixHtmlMetaDesc(distDir);
+console.log(`[post-build] 成功扫描并扩充 HTML 中过短的 meta description，共升级 ${fixedDescCount} 处至合规长度（>= 80 字符）！`);
+
+// 5. 同步 robots.txt 与 IndexNow 文件
+const robotsSrc = path.join(docsDir, '.vuepress', 'public', 'robots.txt');
+if (fs.existsSync(robotsSrc)) {
+  fs.copyFileSync(robotsSrc, path.join(distDir, 'robots.txt'));
+}
+
+// 6. 将整个 docs/.vuepress/dist 同步到根目录 dist 及 .vitepress/dist (三保险全兼容 Cloudflare Pages 输出目录设置)
 const rootDistDir = path.join(projectRoot, 'dist');
 if (fs.existsSync(rootDistDir)) {
   fs.rmSync(rootDistDir, { recursive: true, force: true });
@@ -201,6 +245,4 @@ if (fs.existsSync(vitepressDistDir)) {
 fs.cpSync(distDir, vitepressDistDir, { recursive: true });
 
 console.log('[post-build] 成功同步构建产物至根目录 dist/ 及 docs/.vitepress/dist/ (三保险兼容 Cloudflare Pages)');
-
 console.log('[post-build] SEO 与 Bing 抓取构建后优化全部顺利完成！');
-

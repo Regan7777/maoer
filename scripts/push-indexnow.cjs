@@ -9,7 +9,7 @@ const host = 'maoer.blog';
 const key = '9b7f0616c9694d10a3575b5c2db8e699';
 const keyLocation = `https://${host}/${key}.txt`;
 
-console.log('[IndexNow] 开始准备向 Bing / IndexNow 官方 API 提交全站 URL...');
+console.log('[IndexNow] 开始准备向 Bing / IndexNow / Yandex 官方 API 提交全站 URL...');
 
 if (!fs.existsSync(sitemapPath)) {
   console.error('[IndexNow] 错误: 未找到 sitemap.xml，请先运行 pnpm build');
@@ -18,7 +18,7 @@ if (!fs.existsSync(sitemapPath)) {
 
 const sitemapContent = fs.readFileSync(sitemapPath, 'utf8');
 const locMatches = [...sitemapContent.matchAll(/<loc>(.*?)<\/loc>/g)];
-const urlList = locMatches.map(m => m[1]);
+const urlList = Array.from(new Set(locMatches.map(m => m[1])));
 
 console.log(`[IndexNow] 待提交 URL 数量: ${urlList.length} 条`);
 console.log(`[IndexNow] 认证 Key: ${key}`);
@@ -33,7 +33,8 @@ const payload = JSON.stringify({
 
 const endpoints = [
   'api.indexnow.org',
-  'www.bing.com'
+  'www.bing.com',
+  'yandex.com'
 ];
 
 endpoints.forEach((hostname) => {
@@ -70,4 +71,3 @@ endpoints.forEach((hostname) => {
   req.write(payload);
   req.end();
 });
-

@@ -1,4 +1,21 @@
 User-agent: *
 Allow: /
+Disallow: /go/
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
 
 Sitemap: https://maoer.blog/sitemap.xml
+Sitemap: https://maoer.blog/sitemap-0.xml
