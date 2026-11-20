@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://maoer.blog/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -218,7 +218,7 @@
   </url>
   <url>
     <loc>https://maoer.blog/article/redirecting/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -422,25 +422,25 @@
   </url>
   <url>
     <loc>https://maoer.blog/blog/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://maoer.blog/blog/tags/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>
   <url>
     <loc>https://maoer.blog/blog/archives/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://maoer.blog/blog/categories/</loc>
-    <lastmod>2026-11-08T09:13:52.972Z</lastmod>
+    <lastmod>2026-11-20T02:57:20.943Z</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.50</priority>
   </url>

@@ -143,6 +143,50 @@ if (fs.existsSync(keyFileSource)) {
   console.log(`[post-build] 成功同步 IndexNow 验证文件: ${indexNowKey}.txt`);
 }
 
+// 4.5 修复所有 HTML 文件中缺失或为空的 img alt 属性（满足 Bing / Google SEO & 无障碍指标）
+function fixHtmlImgAlt(dir) {
+  let count = 0;
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      count += fixHtmlImgAlt(fullPath);
+    } else if (entry.isFile() && entry.name.endsWith('.html')) {
+      let html = fs.readFileSync(fullPath, 'utf8');
+      let fileChanged = false;
+
+      // 1. 处理带有空 alt (如 `alt` 或 `alt=""` 或 `alt=''`) 的 img 标签
+      let patchedHtml = html.replace(/<img\b([^>]*?)(\balt(?:\s*=\s*(?:""|''|))?)(\b[^>]*?)>/gi, (match, prefix, altAttr, suffix) => {
+        if (/alt\s*=\s*["'][^"']+["']/i.test(match)) {
+          return match;
+        }
+        fileChanged = true;
+        count++;
+        const isLogo = /logo/i.test(match);
+        const altText = isLogo ? '猫耳博客 Logo' : '猫耳博客配图';
+        return `<img${prefix}alt="${altText}"${suffix}>`;
+      });
+
+      // 2. 处理完全缺少 alt 属性的 img 标签
+      patchedHtml = patchedHtml.replace(/<img\b((?:(?!alt=|\balt\b)[^>])*)>/gi, (match, body) => {
+        fileChanged = true;
+        count++;
+        const isLogo = /logo/i.test(match);
+        const altText = isLogo ? '猫耳博客 Logo' : '猫耳博客配图';
+        return `<img${body} alt="${altText}">`;
+      });
+
+      if (fileChanged) {
+        fs.writeFileSync(fullPath, patchedHtml, 'utf8');
+      }
+    }
+  }
+  return count;
+}
+
+const fixedAltCount = fixHtmlImgAlt(distDir);
+console.log(`[post-build] 成功扫描并修复 HTML 中缺失/为空的 img alt 属性，共注入 ${fixedAltCount} 处合规 alt 描述！`);
+
 // 5. 将整个 docs/.vuepress/dist 同步到根目录 dist 及 .vitepress/dist (三保险全兼容 Cloudflare Pages 输出目录设置)
 const rootDistDir = path.join(projectRoot, 'dist');
 if (fs.existsSync(rootDistDir)) {
