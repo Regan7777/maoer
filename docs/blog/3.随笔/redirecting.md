@@ -1,8 +1,12 @@
-﻿---
+---
 categories:
   - 随笔
-title: 正在跳转
-description: "安全跳转中转页面：对站外合规推荐入口进行安全会话验证与风控检测，保护访客隐私与会话安全。"
+title: 正在前往服务商官方推荐入口（安全跳转中转页）
+description: "安全跳转中转页面：对站外合规推荐入口进行安全会话验证与跨站加密检测，保护访客访问隐私、防止恶意劫持并保障会话安全，随后自动跳转至官方认证站点。"
+head:
+  - - meta
+    - name: robots
+      content: noindex, nofollow
 createTime: 2026/11/04 16:00:00
 author: 猫耳
 tags:

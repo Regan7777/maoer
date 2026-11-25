@@ -7,7 +7,7 @@ export default defineUserConfig({
   base: '/',
   lang: 'zh-CN',
   title: '猫耳',
-  description: '猫耳技术博客 (maoer.blog)：专注 2026 稳定高速机场推荐、科学上网翻墙梯子实测、Clash / Sing-box / Shadowrocket 客户端分流配置教程，以及自建节点与跨境网络线路深度优化指南。',
+  description: '猫耳技术博客 (maoer.blog)：专注 2026 稳定高速机场推荐、科学上网翻墙梯子实测、Clash Verge、Mihomo、Sing-box 与 Shadowrocket 客户端分流配置教程，提供自建节点、IPLC 专线评测与跨境网络线路深度优化及防跑路避坑实用指南。',
 
   head: [
     ['link', { rel: 'icon', type: 'image/jpeg', href: '/favicon.jpg' }],
